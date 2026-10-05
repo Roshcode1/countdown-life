@@ -1,0 +1,187 @@
+DONE SO FAR — "Age in Motion" Android widget project
+=====================================================
+Note on language: this file uses about 80 percent Simplified Technical
+English (ASD-STE100). Sentences are short. Words are simple. Steps are numbered.
+
+1. WHAT THIS PROJECT IS
+-----------------------
+1.1. This project rebuilds the Nothing-phone "Age in Motion" widget for a
+     regular Android phone.
+1.2. A Nothing widget cannot run on other phones. Nothing OS has a special
+     container for such widgets. Other phones do not have this container.
+1.3. So this project is a full native Android app, written in Kotlin.
+1.4. Project folder on this laptop:
+     C:\Users\DELL\Downloads\muse-spark-wid
+1.5. Reference website folder (design source, React + Vite):
+     C:\Users\DELL\Downloads\recreate-nothing-tech-widget
+1.6. Build tools folder (do not delete before migration):
+     C:\Users\DELL\AppData\Local\AgeBuildTools
+1.7. Android SDK folder:
+     C:\Users\DELL\AppData\Local\Android\Sdk
+1.8. Result file (install this on the phone):
+     C:\Users\DELL\Downloads\muse-spark-wid\app\build\outputs\apk\debug\app-debug.apk
+1.9. Package name: com.ageinmotion.widget.
+1.10. Status now: the app builds. All 29 unit tests pass. The widget works.
+
+2. WHAT THE APP DOES NOW
+------------------------
+2.1. Two home-screen widgets: square 2x2 and wide 4x2.
+2.2. Two modes. Mode 1 = Age count-up from a birthday.
+     Mode 2 = Countdown to a future date.
+2.3. Two display styles. Style 1 = dot-matrix digits (5x7 dots, Nothing style).
+     Style 2 = split-flap tiles (retro departure board, animated flips).
+2.4. Age mode shows decimal years (default 9 decimals).
+2.5. Countdown mode shows numbers only, for example "02·05·05·29·447".
+     The groups are months, days, hours, minutes, seconds + fast tenths.
+     Leading zero groups are removed. A lone "053" grows large and centered.
+     An expired countdown shows a single "0".
+2.6. Separators are middle dots (centered). Decimal points stay at the baseline.
+2.7. Settings: birth/target date + time, precision slider, card opacity
+     slider, digit-size slider, HSV color-wheel picker + brightness,
+     faint ghost dots Yes/No, real-time Yes/No, app theme (System/Dark/Light).
+2.8. Live (real-time) mode uses a foreground service. It ticks only when the
+     screen is on. It sleeps between frames. It holds no wake locks.
+2.9. Battery setup card has: system exemption status, one-tap fix button,
+     live heartbeat readout ("LIVE / FROZEN / PAUSED"), engine status,
+     engine restart button, and per-brand setup steps (OnePlus/Oppo, Xiaomi,
+     Vivo, Samsung, Huawei).
+2.10. Launcher icon is the user's own dotted-"A" artwork, scaled to 52 percent
+      with even padding, in 5 screen densities.
+2.11. App interface uses Space Grotesk font and follows system dark/light mode.
+
+3. APPROACHES USED (WHY THE CODE IS THIS WAY)
+---------------------------------------------
+3.1. Approach 1: draw digits as bitmaps, not as text.
+     Reason: RemoteViews cannot draw custom views. A bitmap in an ImageView
+     is the only way to get true dot-matrix dots. Verified approach.
+3.2. Approach 2: Chronometer/TextClock for motion, alarms for numbers.
+     Reason: Android redraws TextClock/Chronometer itself at zero cost.
+     But these views cannot show computed decimals. So numbers refresh
+     once per minute, and only the live engine ticks faster. Platform limit.
+     The Chronometer was later removed (Android 16 float-precision risk).
+3.3. Approach 3: foreground service for real-time, not exact alarms.
+     Reason: exact alarms are throttled in Doze and stripped by brand
+     task killers. A foreground service survives. It pauses with screen off.
+     Proof: researched GitHub (seconds-clock widget, hotspot widget) and
+     official Android docs. All working apps use this pattern.
+3.4. Approach 4: never redraw when nothing changed.
+     Reason: each bitmap push crosses a 1 MB system limit and wakes the
+     launcher. The code compares text first and skips same-text pushes.
+3.5. Approach 5: adaptive tick rate.
+     Reason: at 9 decimals the last digit changes every ~31 ms. At 2 decimals
+     it changes every ~3.6 days. The engine sleeps until the next visible
+     change (60 ms to 60 s). No wasted frames.
+3.6. Approach 6: heartbeat timestamp in settings.
+     Reason: the user could not see if fixes worked. Every tick writes the
+     time. The setup screen shows "refreshed Xs ago · LIVE" or "FROZEN".
+     This makes the invisible visible.
+3.7. Approach 7: two battery gates, not one.
+     Reason: OnePlus/Oppo phones have the system Doze switch AND their own
+     background killer. The app checks the first and guides through the
+     second with per-brand steps. Screenshots from the user's phone proved this.
+3.8. Approach 8: minute alarm always runs, even in live mode.
+     Reason: if any killer stops the service, the widget degrades to minute
+     updates instead of freezing for hours. Defense in depth.
+3.9. Approach 9: transparency via a background image layer.
+     Reason: setBackgroundColor would destroy rounded corners. An ImageView
+     behind the digits takes setImageAlpha and keeps the shape. Documented
+     pattern from real widget apps.
+3.10. Approach 10: calendar-correct countdown, not division.
+     Reason: months have different lengths. The code walks whole calendar
+     months, then splits the remainder. Leap years and month-ends are tested.
+3.11. Approach 11: frame ticks lock to exact clock boundaries (100 ms grid).
+     Reason: fixed delays accumulate drift, so fast digits display stale
+     values. Boundary locking removes the drift.
+3.12. Approach 12: crash-proof tick loop (try/finally always re-arms).
+     Reason: one exception at 8 pushes per second used to kill ticking
+     silently while the service still looked alive. This was a prime suspect
+     for the "it just froze" reports.
+
+4. ERRORS MET AND HOW EACH WAS FIXED
+------------------------------------
+4.1. Error: empty project folder, no build files.
+     Fix: wrote the full Android Studio project by hand (manifest, Gradle
+     files, Kotlin sources, layouts, resources).
+4.2. Error: system JAVA_HOME pointed to a folder that does not exist
+     (C:\Program Files\Java\jdk-1.8). Gradle refused to start.
+     Fix: set JAVA_HOME per build to a good JDK. Never trusted the system value.
+4.3. Error: JDK 22 cannot run Android Gradle Plugin ("Unsupported class file
+     major version 66").
+     Fix: downloaded portable Microsoft JDK 17 and used only that for builds.
+4.4. Error: Gradle not installed, no wrapper files.
+     Fix: downloaded Gradle 8.7 zip, extracted it, generated the wrapper.
+4.5. Error: build scripts used Kotlin syntax inside Groovy files
+     ("Could not set unknown property 'isMinifyEnabled'").
+     Fix: rewrote all three .gradle files in Groovy syntax.
+4.6. Error: manifest merger failed (duplicate ConfigActivity entry).
+     Fix: merged the two entries into one exported activity.
+4.7. Error: NumberPicker crashed (min/max never set).
+     Fix: set minValue/maxValue in code before setting value. (Screen later
+     replaced this control with sliders and Yes/No buttons.)
+4.8. Error: background build processes were killed by the sandbox ("^C",
+     "ChildProcess.kill").
+     Fix: launched builds detached via Start-Process with log files, then
+     polled the logs. Never ran long builds in the foreground.
+4.9. Error: Windows Temp cleaner deleted Gradle bin/ and broke JDK lib/
+     mid-project ("could not open jvm.cfg").
+     Fix: moved the full toolchain to C:\Users\DELL\AppData\Local\AgeBuildTools
+     (persistent), re-extracted from cached zips, copied the Gradle cache.
+4.10. Error: unit tests touched android.graphics.Bitmap ("Method not mocked").
+     Fix: split pure math (DotMatrix.layout, AgeUtils, FlipClock helpers)
+     from Canvas drawing. Tests cover only pure code. No Robolectric needed.
+4.11. Error: my own test expectations were miscalculated three times
+     (9978 vs 9963 days; day-index [3] vs [4]; test helper missing new fields).
+     Fix: verified each number with independent Python date math, then fixed
+     the test (never the app code). Lesson: check the test first.
+4.12. Error: Kotlin type errors (Intent vs Context in onTaskRemoved;
+     Int vs Float in RectF; Color class misuse; data-class field additions).
+     Fix: read compiler line numbers, fixed each call site, rebuilt.
+4.13. Error: resource link failure (layout pointed at renamed string
+     battery_disable).
+     Fix: renamed the reference to battery_fix.
+4.14. Error: live mode froze on the user's OnePlus (reported twice).
+     Causes found: (a) no crash-proofing on the tick loop; (b) live mode had
+     dropped minute ticks for a 15-minute watchdog; (c) swipe-from-recents
+     killed the service with no revive; (d) battery UI sent users to the
+     wrong settings page (stock dialog missing on Oppo/OnePlus builds).
+     Fixes: try/finally loop, minute alarm in both modes, onTaskRemoved
+     revive, resolve-aware battery routing + OEM steps + heartbeat proof.
+4.15. Error: user-supplied icon file had to be found and converted.
+     Fix: located the ChatGPT PNG in Downloads, read its real content box
+     in C#, made art 62 percent then 52 percent on transparent canvas,
+     exported 5 densities with high-quality scaling.
+4.16. Error: white status-bar strip in dark theme hid content on scroll.
+     Fix: explicit statusBarColor + windowLightStatusBar in values/themes.xml
+     and values-night/themes.xml.
+4.17. Error: white brand color made outlined buttons and sliders invisible
+     in light mode.
+     Fix: dedicated outlined-button style with adaptive text color;
+     adaptive tints on sliders.
+4.18. Error: Color.valueOf().value() did not resolve in Kotlin.
+     Fix: computed brightness from Color.red/green/blue directly.
+
+5. DESIGN DECISIONS THE USER MADE (DO NOT REVERSE WITHOUT ASKING)
+-----------------------------------------------------------------
+5.1. No red color anywhere in app interface. All accents are white.
+5.2. Minimal setup screen: COUNTDOWN title centered, theme icon top-right,
+     no section headers, Yes/No buttons instead of switches, RGB sliders
+     replaced by HSV color wheel, stats block removed, footer removed.
+5.3. Glow effect removed completely (code and strings deleted).
+5.4. Launcher icon must be the user's dotted-"A" artwork at 52 percent,
+     not a redraw.
+5.5. Countdown shows numbers only with middle dots; zero groups hidden;
+     digits grow as groups drop.
+5.6. Tenths digit on countdown seconds ("ticking fast" requirement).
+
+6. CURRENT STATE AND NEXT STEPS
+-------------------------------
+6.1. Current APK builds clean. 29 tests pass, 0 fail.
+6.2. Last verified build timestamp is in the APK filename metadata
+     (check app\build\outputs\apk\debug\ModificationTime if unsure — rebuild).
+6.3. Known limits (platform, not bugs): no per-second arbitrary decimals
+     without a running service; Doze pauses screen-off ticks; OEM killers
+     need the two manual toggles; Play Store would need $25 fee + review
+     (specialUse foreground type) — app is sideload-only for now.
+6.4. Suggested next work: user acceptance test on the phone (heartbeat line
+     is the oracle); optional live-wallpaper fork for 30fps racing digits;
+     optional release signing with a real keystore.

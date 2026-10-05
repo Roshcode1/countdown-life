@@ -1,0 +1,8 @@
+AGE IN MOTION — TRANSFER PACK (phone -> new laptop)
+==================================================
+1. Copy this whole AgeTransfer folder to the new laptop.
+2. Open: muse-spark-wid\everyting_need.md  (exact file name, spelling as-is).
+3. Do step 1 to step 5 in that file. Build time is about 30 minutes.
+4. AgeInMotion.apk = latest installable app (also rebuilt by step 4).
+5. toolchain\*.zip = portable JDK 17 + Gradle 8.7 (no install needed,
+   only extract). reference\ = design-source website zip.

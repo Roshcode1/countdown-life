@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- top bar: centered title + theme icon corner -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:letterSpacing="0.3"
+                android:text="@string/countdown_title"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <ImageButton
+                android:id="@+id/theme_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_section_theme"
+                android:tint="@color/text_secondary" />
+        </RelativeLayout>
+
+        <!-- live widget preview -->
+        <FrameLayout
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:id="@+id/preview_card_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/bg_black_rounded" />
+
+            <FrameLayout
+                android:id="@+id/preview_wrap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/preview_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true" />
+            </FrameLayout>
+        </FrameLayout>
+
+        <!-- mode: count up from birth, or count down to a date -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/mode_toggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:checkedButton="@id/mode_age_button"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mode_age_button"
+                style="@style/Widget.AgeInMotion.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/mode_age" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mode_countdown_button"
+                style="@style/Widget.AgeInMotion.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/mode_countdown" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <!-- birthday card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/card_bg"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="@color/card_stroke"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/date_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textColor="@color/text_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/pick_date_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/pick_date" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/pick_time_button"
+                        style="@style/Widget.AgeInMotion.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/pick_time" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- style toggle -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/style_toggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:checkedButton="@id/dots_style_button"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/dots_style_button"
+                style="@style/Widget.AgeInMotion.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/style_dots" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/flip_style_button"
+                style="@style/Widget.AgeInMotion.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/style_flip" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ghost_label"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/ghost_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:checkedButton="@id/ghost_no_button"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ghost_yes_button"
+                    style="@style/Widget.AgeInMotion.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/live_yes" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ghost_no_button"
+                    style="@style/Widget.AgeInMotion.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/live_no" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </LinearLayout>
+
+        <!-- color wheel picker -->
+        <com.ageinmotion.widget.ColorWheelView
+            android:id="@+id/color_wheel"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_marginTop="24dp" />
+
+        <TextView
+            android:id="@+id/color_hex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="monospace"
+            android:text="#FFFFFF"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:letterSpacing="0.25"
+            android:text="@string/brightness_label"
+            android:textColor="@color/text_muted"
+            android:textSize="10sp" />
+
+        <SeekBar
+            android:id="@+id/brightness_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            android:progressTint="@color/text_primary"
+            android:thumbTint="@color/text_primary" />
+
+        <!-- background opacity -->
+        <TextView
+            android:id="@+id/opacity_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:letterSpacing="0.25"
+            android:text="@string/opacity_label"
+            android:textColor="@color/text_secondary"
+            android:textSize="10sp" />
+
+        <SeekBar
+            android:id="@+id/opacity_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            android:progressTint="@color/text_primary"
+            android:thumbTint="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/digit_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:letterSpacing="0.25"
+            android:text="@string/digit_label"
+            android:textColor="@color/text_secondary"
+            android:textSize="10sp" />
+
+        <SeekBar
+            android:id="@+id/digit_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            android:min="40"
+            android:progressTint="@color/text_primary"
+            android:thumbTint="@color/text_primary" />
+
+        <!-- precision -->
+        <TextView
+            android:id="@+id/precision_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:letterSpacing="0.25"
+            android:text="@string/precision_label"
+            android:textColor="@color/text_secondary"
+            android:textSize="10sp" />
+
+        <SeekBar
+            android:id="@+id/precision_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:max="10"
+            android:progressTint="@color/text_primary"
+            android:thumbTint="@color/text_primary" />
+
+        <!-- real-time yes / no -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/live_label"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/live_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:checkedButton="@id/live_no_button"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/live_yes_button"
+                    style="@style/Widget.AgeInMotion.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/live_yes" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/live_no_button"
+                    style="@style/Widget.AgeInMotion.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/live_no" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </LinearLayout>
+
+        <!-- battery card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/card_bg"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="@color/card_stroke"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/battery_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/battery_restricted"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/heartbeat_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="monospace"
+                    android:text=""
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/engine_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="monospace"
+                    android:text=""
+                    android:textSize="13sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/engine_button"
+                    style="@style/Widget.AgeInMotion.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/engine_restart"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/battery_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/battery_fix"
+                    app:cornerRadius="14dp" />
+
+                <TextView
+                    android:id="@+id/battery_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/battery_hint"
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/oem_steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="monospace"
+                    android:text=""
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/save"
+            app:cornerRadius="16dp" />
+    </LinearLayout>
+</ScrollView>

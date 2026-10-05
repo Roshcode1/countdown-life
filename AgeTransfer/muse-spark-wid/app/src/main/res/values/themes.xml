@@ -1,0 +1,19 @@
+<resources>
+    <style name="Theme.AgeInMotion" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorOnPrimary">#101114</item>
+        <item name="android:windowBackground">@color/screen_bg</item>
+        <item name="android:statusBarColor">@color/screen_bg</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorSurface">@color/card_bg</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:fontFamily">@font/space_grotesk</item>
+        <item name="fontFamily">@font/space_grotesk</item>
+    </style>
+
+    <!-- Outlined buttons keep adaptive dark/light text now that the
+         primary brand color is white (white text would vanish in light mode). -->
+    <style name="Widget.AgeInMotion.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+</resources>

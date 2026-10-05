@@ -1,0 +1,8 @@
+<resources>
+    <color name="screen_bg">#000000</color>
+    <color name="card_bg">#141414</color>
+    <color name="card_stroke">#2A2A2A</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="text_muted">#8A8A8A</color>
+</resources>

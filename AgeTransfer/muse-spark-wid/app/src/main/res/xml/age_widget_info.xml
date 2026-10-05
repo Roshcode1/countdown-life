@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Square 2x2 widget (reference default size) -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_desc"
+    android:initialLayout="@layout/widget_age"
+    android:previewLayout="@layout/widget_age"
+    android:minWidth="110dp"
+    android:minHeight="110dp"
+    android:targetCellWidth="2"
+    android:targetCellHeight="2"
+    android:maxResizeWidth="640dp"
+    android:maxResizeHeight="640dp"
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable"
+    android:configure="com.ageinmotion.widget.ConfigActivity"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="0" />

@@ -1,0 +1,14 @@
+<resources>
+    <!-- Night override: black status bar with light icons (no more white strip). -->
+    <style name="Theme.AgeInMotion" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorOnPrimary">#101114</item>
+        <item name="android:windowBackground">@color/screen_bg</item>
+        <item name="android:statusBarColor">@color/screen_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorSurface">@color/card_bg</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:fontFamily">@font/space_grotesk</item>
+        <item name="fontFamily">@font/space_grotesk</item>
+    </style>
+</resources>
